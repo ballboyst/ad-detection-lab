@@ -5,9 +5,11 @@
 
 ## 環境構成
 ホスト:AMD RYZEN7 + RAM 32GB + VMware
-VM1:Windows Server 2022 DC(adc01.local)
-VM2:Windows Server 2022 Member(ファイルサーバー)
-VM3:Windows11(社員ＰＣ)
+VM1:Windows Server 2022 ADC01(adc01.local)
+VM2:Windows Server 2022 MEMBER01(ファイルサーバー)
+VM3:Windows11 WORKSTATION01(社員ＰＣ)
+    各VMのネットワークはホストオンリーとする
+
 
 Splunk:Enterprise Free(ログ解析)
 ADC01(192.168.229.136)
@@ -22,3 +24,4 @@ WORKSTATION01(192.168.229.138)
     Universal Forwader → ADC01送信
     Sysmon ProcessCreate
     Powershell BlockRule
+
