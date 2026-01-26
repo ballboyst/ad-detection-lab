@@ -12,7 +12,7 @@ VM3:Windows11 WORKSTATION01(社員ＰＣ)
 
 
 Splunk:Enterprise Free(ログ解析)
-ADC01(192.168.2.139)
+ADC01(192.168.2.130)
     Splunk Enterprise(Indexer+Search Header)
     Universal Forwader → MEMBER01/WORKSTATION01
     Windows Event Log(Security/System)収集
@@ -20,7 +20,7 @@ MEMBER01(192.168.229.137)
     Universal Forwader → ADC01送信
     Sysmonログ
     Defenderログ
-WORKSTATION01(192.168.229.138)
+WORKSTATION01(192.168.2.132)
     Universal Forwader → ADC01送信
     Sysmon ProcessCreate
     Powershell BlockRule
@@ -29,6 +29,9 @@ WORKSTATION01(192.168.229.138)
 1. splunk.comからsplunkenterpriseをダウンロードしインストール
 2. splunk.comからsplunkforwaderをダウンロードしインストール
 3. firewall設定でoutboundとinboundの該当ポートを許可
+    outbound:9997を許可
+    inbound:8089を許可
+    **Indexerの場合はinboundに9997の許可が必要**
 4. splunkにログインし「設定」の「転送と受信」から「受信の設定」に入り、9997番ポートを追加する
 5. outputs.confで転送先を設定する
 今回は以下の設定（C:\Program Files\SplunkUniversalForwarder\etc\system\local\outputs.conf）
@@ -46,19 +49,19 @@ indexAndForward = false
 6. inputs.confで取得するデータを設定する
 今回は以下の設定（C:\Program Files\SplunkUniversalForwarder\etc\system\local\inputs.conf）
 ```
-[WindEventLog://Security]
+[WinEventLog://Security]
 disabled = 0
 start_from = oldest
 index = windows
 sourcetype = WinEventLog:Security
 
-[WindEventLog://System]
+[WinEventLog://System]
 disabled = 0
 start_from = oldest
 index = windows
 sourcetype = WinEventLog:System
 
-[WindEventLog://Application]
+[WinEventLog://Application]
 disabled = 0
 start_from = oldest
 index = windows
