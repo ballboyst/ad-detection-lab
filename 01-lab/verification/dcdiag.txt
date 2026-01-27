@@ -1,0 +1,218 @@
+
+C:\Users\Administrator>dcdiag /test:dns /v
+
+ディレクトリ サーバー診断
+
+初期セットアップを実行しています:
+   ホーム サーバーの検索を試みています...
+   * ローカル コンピューター ADC01 がディレクトリ サーバーであることを確認しています。
+   ホーム サーバー = ADC01
+   * サーバー ADC01 のディレクトリ サービスに接続しています。
+   * AD フォレストが識別されました。
+   Collecting AD specific global data
+   * サイトの情報を収集しています。
+   Calling ldap_search_init_page(hld,CN=Sites,CN=Configuration,DC=adc01,DC=local,LDAP_SCOPE_SUBTREE,(objectCategory=ntDSSiteSettings),.......
+   The previous call succeeded
+   Iterating through the sites
+   Looking at base site object: CN=NTDS Site Settings,CN=Default-First-Site-Name,CN=Sites,CN=Configuration,DC=adc01,DC=local
+   Getting ISTG and options for the site
+   * すべてのサーバーを識別しています。
+   Calling ldap_search_init_page(hld,CN=Sites,CN=Configuration,DC=adc01,DC=local,LDAP_SCOPE_SUBTREE,(objectClass=ntDSDsa),.......
+   The previous call succeeded....
+   The previous call succeeded
+   Iterating through the list of servers
+   Getting information for the server CN=NTDS Settings,CN=ADC01,CN=Servers,CN=Default-First-Site-Name,CN=Sites,CN=Configuration,DC=adc01,DC=local
+   objectGuid obtained
+   InvocationID obtained
+   dnsHostname obtained
+   site info obtained
+   All the info for the server collected
+   * すべての NC 相互参照を識別しています。
+   * 1 個の DC が検出されました。このうち 1 個をテストしています。
+   初期情報の収集が完了しました。
+
+必須の初期テストを実行しています
+
+   サーバーをテストしています: Default-First-Site-Name\ADC01
+      テストを開始しています: Connectivity
+         * Active Directory LDAP Services Check
+         Determining IP4 connectivity
+         * Active Directory RPC Services Check
+         ......................... ADC01 はテスト Connectivity に合格しました
+
+プライマリ テストを実行しています
+
+   サーバーをテストしています: Default-First-Site-Name\ADC01
+      テストはユーザーの要求により省略されました: Advertising
+      テストはユーザーの要求により省略されました: CheckSecurityError
+      テストはユーザーの要求により省略されました: CutoffServers
+      テストはユーザーの要求により省略されました: FrsEvent
+      テストはユーザーの要求により省略されました: DFSREvent
+      テストはユーザーの要求により省略されました: SysVolCheck
+      テストはユーザーの要求により省略されました: KccEvent
+      テストはユーザーの要求により省略されました: KnowsOfRoleHolders
+      テストはユーザーの要求により省略されました: MachineAccount
+      テストはユーザーの要求により省略されました: NCSecDesc
+      テストはユーザーの要求により省略されました: NetLogons
+      テストはユーザーの要求により省略されました: ObjectsReplicated
+      テストはユーザーの要求により省略されました: OutboundSecureChannels
+      テストはユーザーの要求により省略されました: Replications
+      テストはユーザーの要求により省略されました: RidManager
+      テストはユーザーの要求により省略されました: Services
+      テストはユーザーの要求により省略されました: SystemLog
+      テストはユーザーの要求により省略されました: Topology
+      テストはユーザーの要求により省略されました: VerifyEnterpriseReferences
+      テストはユーザーの要求により省略されました: VerifyReferences
+      テストはユーザーの要求により省略されました: VerifyReplicas
+
+      テストを開始しています: DNS
+
+         DNS テストは実行中であり、ハングしていません。しばらくお待ちください...
+         See DNS test in enterprise tests section for results
+         ......................... ADC01 はテスト DNS に合格しました
+
+   パーティション テストを実行しています: ForestDnsZones
+      テストはユーザーの要求により省略されました: CheckSDRefDom
+      テストはユーザーの要求により省略されました: CrossRefValidation
+
+   パーティション テストを実行しています: DomainDnsZones
+      テストはユーザーの要求により省略されました: CheckSDRefDom
+      テストはユーザーの要求により省略されました: CrossRefValidation
+
+   パーティション テストを実行しています: Schema
+      テストはユーザーの要求により省略されました: CheckSDRefDom
+      テストはユーザーの要求により省略されました: CrossRefValidation
+
+   パーティション テストを実行しています: Configuration
+      テストはユーザーの要求により省略されました: CheckSDRefDom
+      テストはユーザーの要求により省略されました: CrossRefValidation
+
+   パーティション テストを実行しています: adc01
+      テストはユーザーの要求により省略されました: CheckSDRefDom
+      テストはユーザーの要求により省略されました: CrossRefValidation
+
+   エンタープライズ テストを実行しています: adc01.local
+      テストを開始しています: DNS
+         ドメイン コントローラーのテスト結果:
+
+            DC: ADC01.adc01.local
+            ドメイン: adc01.local
+
+
+               TEST: Authentication (Auth)
+                  認証テスト: 正常に終了しました
+
+               TEST: Basic (Basc)
+                  OS Microsoft Windows Server 2022 Standard Evaluation (Service Pack level: 0.0) はサポートされています 。
+                  NETLOGON サービスが実行中です。
+                  kdc サービスが実行中です。
+                  DNSCACHE サービスが実行中です。
+                  DNS サービスが実行中です。
+                  DC は DNS サーバーです。
+                  ネットワーク アダプター情報:
+                  アダプター [00000001] Intel(R) 82574L Gigabit Network Connection:
+                     MAC address is 00:0C:29:ED:FC:60
+                     警告: IP アドレスが動的です (構成が正しくない可能性があります)
+                     警告: アダプター 00:0C:29:ED:FC:60 の IP アドレスが動的です (構成が正しくない可能性があります)
+                     IP address: 192.168.2.130, fe80::3dfc:6988:8810:7d0d
+                     DNS サーバー:
+                        127.0.0.1 (adc01.adc01.local.) [Valid]
+                  The A host record(s) for this DC was found
+                  The SOA record for the Active Directory zone was found
+                  The Active Directory zone on this DC/DNS server was found primary
+                  Root zone on this DC/DNS server was not found
+
+               TEST: Forwarders/Root hints (Forw)
+                  Recursion is enabled
+                  Forwarders Information:
+                     192.168.229.2 (<name unavailable>) [Valid]
+
+               TEST: Delegations (Del)
+                  Delegation information for the zone: adc01.local.
+                     Delegated domain name: _msdcs.adc01.local.
+                        DNS server: adc01.adc01.local. IP:192.168.2.130 [Valid]
+
+               TEST: Dynamic update (Dyn)
+                  Test record dcdiag-test-record added successfully in zone adc01.local
+                  Test record dcdiag-test-record deleted successfully in zone adc01.local
+
+               TEST: Records registration (RReg)
+                  ネットワーク アダプター [00000001] Intel(R) 82574L Gigabit Network Connection:
+                     Matching CNAME record found at DNS server 192.168.2.130:
+                     f44d929f-e96e-4ed9-8a1c-654ed92de0e9._msdcs.adc01.local
+
+                     Matching A record found at DNS server 192.168.2.130:
+                     ADC01.adc01.local
+
+                     Matching  SRV record found at DNS server 192.168.2.130:
+                     _ldap._tcp.adc01.local
+
+                     Matching  SRV record found at DNS server 192.168.2.130:
+                     _ldap._tcp.d8a8489e-5ee8-49fb-9d19-57d67941985a.domains._msdcs.adc01.local
+
+                     Matching  SRV record found at DNS server 192.168.2.130:
+                     _kerberos._tcp.dc._msdcs.adc01.local
+
+                     Matching  SRV record found at DNS server 192.168.2.130:
+                     _ldap._tcp.dc._msdcs.adc01.local
+
+                     Matching  SRV record found at DNS server 192.168.2.130:
+                     _kerberos._tcp.adc01.local
+
+                     Matching  SRV record found at DNS server 192.168.2.130:
+                     _kerberos._udp.adc01.local
+
+                     Matching  SRV record found at DNS server 192.168.2.130:
+                     _kpasswd._tcp.adc01.local
+
+                     Matching  SRV record found at DNS server 192.168.2.130:
+                     _ldap._tcp.Default-First-Site-Name._sites.adc01.local
+
+                     Matching  SRV record found at DNS server 192.168.2.130:
+                     _kerberos._tcp.Default-First-Site-Name._sites.dc._msdcs.adc01.local
+
+                     Matching  SRV record found at DNS server 192.168.2.130:
+                     _ldap._tcp.Default-First-Site-Name._sites.dc._msdcs.adc01.local
+
+                     Matching  SRV record found at DNS server 192.168.2.130:
+                     _kerberos._tcp.Default-First-Site-Name._sites.adc01.local
+
+                     Matching  SRV record found at DNS server 192.168.2.130:
+                     _ldap._tcp.gc._msdcs.adc01.local
+
+                     Matching A record found at DNS server 192.168.2.130:
+                     gc._msdcs.adc01.local
+
+                     Matching  SRV record found at DNS server 192.168.2.130:
+                     _gc._tcp.Default-First-Site-Name._sites.adc01.local
+
+                     Matching  SRV record found at DNS server 192.168.2.130:
+                     _ldap._tcp.Default-First-Site-Name._sites.gc._msdcs.adc01.local
+
+                     Matching  SRV record found at DNS server 192.168.2.130:
+                     _ldap._tcp.pdc._msdcs.adc01.local
+
+
+         上記のドメイン コントローラーで使用されている DNS サーバーのテスト結果の要約:
+
+            DNS サーバー: 192.168.2.130 (adc01.adc01.local.)
+               この DNS サーバーはすべてのテストに合格しました。
+               Name resolution is functional._ldap._tcp SRV record for the forest root domain is registered
+               DNS delegation for the domain  _msdcs.adc01.local. is operational on IP 192.168.2.130
+
+
+            DNS サーバー: 192.168.229.2 (<name unavailable>)
+               この DNS サーバーはすべてのテストに合格しました。
+
+         DNS テスト結果の要約:
+
+                                            Auth Basc Forw Del  Dyn  RReg Ext
+            _________________________________________________________________
+            ドメイン: adc01.local
+               ADC01                        PASS WARN PASS PASS PASS PASS n/a
+
+         ......................... adc01.local はテスト DNS に合格しました
+      テストはユーザーの要求により省略されました: LocatorCheck
+      テストはユーザーの要求により省略されました: Intersite
+
+C:\Users\Administrator>
