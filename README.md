@@ -1,12 +1,25 @@
 # 公務員CSIRTのAD攻撃検知ラボ
 
 ## 目的
-公務員CSIRT経験者として、民間企業CSIRTリーダー転職を見据えた**AD攻撃→Splunk検知の実務代替ラボ**を構築
+公務員系CSIRTの経験者として、民間企業CSIRTリーダー転職を見据えた**AD攻撃→Splunk検知の実務代替ラボ**です。
 
 このリポジトリは、3台構成のADラボ上で PsExec を用いた横移動（TA0008）を検知し、5分以内に封じ込める一連の流れを再現することを目的としています。
 
+
+## このリポジトリの読み方
+
+時間がない方向けのおすすめ閲覧順は以下の通りです。
+
+1. 本 README（目的とラボ構成の概要）
+2. `03-dashboards/` のスクリーンショット
+3. `02-playbooks/01-AD-lateral-movement.md` の検知シナリオと対応手順
+4. 必要に応じて `01-lab/` の構築メモ（再現したい場合）
+
+
 ## このラボで検証している検知
 
+- 対応タクティクス：TA0008 Lateral Movement
+- 対応テクニック例：T1570,T1021.002
 - PsExec による ADMIN$ 共有アクセス（Event ID 5145）
 - PSEXESVC サービス作成による横移動実行（Event ID 7045）
 - 日本語 / 英語 Windows イベントログ両対応のフィールド正規化（ShareName, ServiceName など）
@@ -32,19 +45,29 @@ graph TD;
     style C2 fill:#f3e5f5
 
 ```
-DC1: AD DS / DNS / Splunk (Windowsログ集約・検知)
+ - DC1: AD DS / DNS / Splunk (Windowsログ集約・検知)
 
-MEMBER01: ドメイン参加サーバ（横移動の標的）
+ - MEMBER01: ドメイン参加サーバ（横移動の標的）
 
-WORKSTATION01: ドメイン参加クライアント（攻撃元想定）
+ - WORKSTATION01: ドメイン参加クライアント（攻撃元想定）
+
+
+## ダッシュボード
+
+- `PsExec LATERAL MOVEMENT DETECTION`（03-dashboards/）
+  - 過去24時間の PsExec 横移動検知数を Single Value で表示（1件以上で赤表示）
+  - 下部テーブルで 5145（ADMIN$ アクセス）→7045（PSEXESVC サービス作成）の攻撃チェーンを色分け表示
+  - 日本語 / 英語 Windows イベントログ両対応のフィールド正規化を実装
 
 
 ## プレイブック
 
 - [01-AD横移動検知・封じ込めプレイブック](./02-playbooks/01-AD-lateral-movement.md)  
   - 対象: WORKSTATION01 → MEMBER01 間の PsExec 横移動  
-  - 使用クエリ: `PsExec LATERAL MOVEMENT DETECTION` ダッシュボード内の検索と同一
-
+  - 使用クエリ: `PsExec LATERAL MOVEMENT DETECTION` ダッシュボード内の検索と同様ｌ
+  -  成功条件：PsExec実行から５分以内にダッシュボードで検知→攻撃元ホスト隔離→PSEXESVCサービス削除まで 
+  - 公務員系CSIRTでの運用経験をもとに、民間企業CSIRTリーダー職向けに AD 攻撃検知とインシデント対応スキルを示すための実践ラボです。
+  - 成功条件：PsExec実行から５分以内に、ダッシュボードで検知→攻撃元ホスト隔離→PSEXESVCサービス削除まで完了
 
 ## ステータス
 
@@ -52,79 +75,15 @@ WORKSTATION01: ドメイン参加クライアント（攻撃元想定）
 - ✅ 5分以内封じ込めプレイブック（netsh隔離 + sc delete）
 - ⏳ 4624/4776 を使ったログオン経路トレース（別プレイブックとして追加予定）
 
-
-## 環境構成(メモ)
-ホスト:AMD RYZEN7 + RAM 32GB + VMware
-VM1:Windows Server 2022 ADC01(adc01.local)
-VM2:Windows Server 2022 MEMBER01(ファイルサーバー)
-VM3:Windows11 WORKSTATION01(社員ＰＣ)
-    各VMのネットワークはホストオンリーとする
+## ラボ環境（概要）
 
 
-Splunk:Enterprise Free(ログ解析)
-ADC01(192.168.2.130)
-    Splunk Enterprise(Indexer+Search Header)
-    Universal Forwader → MEMBER01/WORKSTATION01
-    Windows Event Log(Security/System)収集
-MEMBER01(192.168.229.137)
-    Universal Forwader → ADC01送信
-    Defenderログ
-WORKSTATION01(192.168.2.132)
-    Universal Forwader → ADC01送信
-    Powershell BlockRule
+- ホスト:AMD RYZEN7 / 32GB RAM / VMware
+- ゲスト:
+ - VM1:Windows Server 2022 ADC01(ドメインコントローラ / Splunk Indexe)
+ - VM2:Windows Server 2022 MEMBER01(ファイルサーバー / UF)
+ - VM3:Windows11 WORKSTATION01(クライアント / UF)
+- ログ収集：
+ - 各ホストからADC01上のSplunk EnterpriseへWinEventLog(Security/System/Application)を転送
 
-## Splunkの導入
-1. splunk.comからsplunkenterpriseをダウンロードしインストール
-2. splunk.comからsplunkforwaderをダウンロードしインストール
-3. firewall設定でoutboundとinboundの該当ポートを許可
-    outbound:9997を許可
-    inbound:8089を許可
-    **Indexerの場合はinboundに9997の許可が必要**
-4. splunkにログインし「設定」の「転送と受信」から「受信の設定」に入り、9997番ポートを追加する
-5. outputs.confで転送先を設定する
-今回は以下の設定（C:\Program Files\SplunkUniversalForwarder\etc\system\local\outputs.conf）
-```
-[tcpout]
-defaultGroup = splunk_indexer
-
-[tcpout:splunk_indexer]
-server = 192.168.2.130:9997
-
-[forwarder]
-indexAndForward = false
-
-```
-6. inputs.confで取得するデータを設定する
-今回は以下の設定（C:\Program Files\SplunkUniversalForwarder\etc\system\local\inputs.conf）
-```
-[WinEventLog://Security]
-disabled = 0
-start_from = oldest
-index = windows
-sourcetype = WinEventLog:Security
-
-[WinEventLog://System]
-disabled = 0
-start_from = oldest
-index = windows
-sourcetype = WinEventLog:System
-
-[WinEventLog://Application]
-disabled = 0
-start_from = oldest
-index = windows
-sourcetype = WinEventLog:Application
-```
-7. splunkforwaderを再起動する
-コマンドプロンプトでprogramfiles\splunkforwader\bin\に移動し、以下コマンドを実行
-```
-splunk restart
-```
-8. インデックスの設定
-splunkにログインし、「設定」から「インデックス」を選択し、新規インデックス(windows)を作成する。
-9. splunkを再起動する
-コマンドプロンプトでprogramfiles\splunk\bin\に移動し、以下コマンドを実行
-```
-splunk restart
-```
-10. splunkにログインしサーチからイベントログが取れているかを確認する。
+ 詳細なセットアップ手順は[01-lab/SPLUNK_SETUP.md](./01-lab/SPLUNK_SETUP.md)を参照してください。
